@@ -95,4 +95,34 @@ contract ChainEscrow {
         milestone.status
     );
 }
+    function approveMilestone(
+    uint256 jobId,
+    uint256 milestoneId
+) external {
+    Job storage job = jobs[jobId];
+
+    require(msg.sender == job.client, "Only client");
+
+    require(
+        milestoneId < job.milestones.length,
+        "Invalid milestone"
+    );
+
+    Milestone storage milestone = job.milestones[milestoneId];
+
+    require(
+        milestone.status == MilestoneStatus.Submitted,
+        "Milestone not submitted"
+    );
+
+    // EFFECT-change status first and then transfer eth
+    milestone.status = MilestoneStatus.Approved;
+
+    // INTERACTION
+    (bool success, ) = payable(job.freelancer).call{
+        value: milestone.amount
+    }("");
+
+    require(success, "Payment failed");
+}
 }

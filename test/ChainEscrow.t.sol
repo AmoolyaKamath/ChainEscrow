@@ -176,4 +176,127 @@ contract ChainEscrowTest is Test {
 
     escrow.submitMilestone(0, 0);
 }
+    function testApproveMilestonePaysFreelancer() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // Freelancer submits milestone
+    vm.prank(freelancer);
+    escrow.submitMilestone(0, 0);
+
+    uint256 freelancerBalanceBefore = freelancer.balance;
+
+    // Client approves milestone
+    vm.prank(client);
+    escrow.approveMilestone(0, 0);
+
+    uint256 freelancerBalanceAfter = freelancer.balance;
+
+    // Freelancer should receive exactly 1 ETH
+    assertEq(
+        freelancerBalanceAfter - freelancerBalanceBefore,
+        1 ether
+    );
+
+    // Milestone should now be Approved
+    (
+        uint256 amount,
+        ChainEscrow.MilestoneStatus status
+    ) = escrow.getMilestone(0, 0);
+
+    assertEq(amount, 1 ether);
+    assertEq(
+        uint8(status),
+        uint8(ChainEscrow.MilestoneStatus.Approved)
+    );
+}
+    function testOnlyClientCanApprove() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // Freelancer submits milestone
+    vm.prank(freelancer);
+    escrow.submitMilestone(0, 0);
+
+    // Freelancer tries to approve it
+    vm.prank(freelancer);
+
+    vm.expectRevert("Only client");
+
+    escrow.approveMilestone(0, 0);
+}
+    function testCannotApprovePendingMilestone() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // Milestone is still Pending.
+    vm.prank(client);
+
+    vm.expectRevert("Milestone not submitted");
+
+    escrow.approveMilestone(0, 0);
+}
+    function testCannotApproveMilestoneTwice() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // Freelancer submits
+    vm.prank(freelancer);
+    escrow.submitMilestone(0, 0);
+
+    // Client approves — first payment
+    vm.prank(client);
+    escrow.approveMilestone(0, 0);
+
+    // Client tries to approve again
+    vm.prank(client);
+
+    vm.expectRevert("Milestone not submitted");
+
+    escrow.approveMilestone(0, 0);
+}
 }
