@@ -99,4 +99,81 @@ contract ChainEscrowTest is Test {
         amounts
     );
 }
+    function testSubmitMilestone() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    vm.prank(freelancer);
+    escrow.submitMilestone(0, 0);
+
+    (
+        uint256 amount,
+        ChainEscrow.MilestoneStatus status
+    ) = escrow.getMilestone(0, 0);
+
+    assertEq(amount, 1 ether);
+    assertEq(
+        uint8(status),
+        uint8(ChainEscrow.MilestoneStatus.Submitted)
+    );
+}
+    function testOnlyFreelancerCanSubmit() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // Client tries to submit the milestone
+    vm.prank(client);
+
+    vm.expectRevert("Only freelancer");
+
+    escrow.submitMilestone(0, 0);
+}
+    function testCannotSubmitMilestoneTwice() public {
+    uint256[] memory amounts = new uint256[](2);
+
+    amounts[0] = 1 ether;
+    amounts[1] = 2 ether;
+
+    vm.deal(client, 10 ether);
+
+    vm.prank(client);
+    escrow.createJob{value: 3 ether}(
+        freelancer,
+        arbiter,
+        amounts
+    );
+
+    // First submission — should work
+    vm.prank(freelancer);
+    escrow.submitMilestone(0, 0);
+
+    // Second submission — should fail
+    vm.prank(freelancer);
+
+    vm.expectRevert("Milestone not pending");
+
+    escrow.submitMilestone(0, 0);
+}
 }

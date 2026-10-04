@@ -36,7 +36,7 @@ contract ChainEscrow {
         require(arbiter != address(0), "Invalid arbiter");
         require(amounts.length >= 2, "Need at least 2 milestones");
 
-        uint256 total;
+        uint256 total=0;
 
         for (uint256 i = 0; i < amounts.length; i++) {
             total += amounts[i];
@@ -61,4 +61,38 @@ contract ChainEscrow {
 
         nextJobId++;
     }
+    function submitMilestone(
+    uint256 jobId,
+    uint256 milestoneId
+) external {
+    Job storage job = jobs[jobId];
+
+    require(msg.sender == job.freelancer, "Only freelancer");
+
+    require(
+        milestoneId < job.milestones.length,
+        "Invalid milestone"
+    );
+
+    require(
+        job.milestones[milestoneId].status == MilestoneStatus.Pending,
+        "Milestone not pending"
+    );
+
+    job.milestones[milestoneId].status = MilestoneStatus.Submitted;
+}
+    function getMilestone(
+    uint256 jobId,
+    uint256 milestoneId
+) external view returns (
+    uint256 amount,
+    MilestoneStatus status
+) {
+    Milestone storage milestone = jobs[jobId].milestones[milestoneId];
+
+    return (
+        milestone.amount,
+        milestone.status
+    );
+}
 }
