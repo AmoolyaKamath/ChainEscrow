@@ -1,0 +1,181 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #c4d2ed;
+  background: #c4cfe4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #dee7f0;
+  color: #516a9a;
+}
+
+/* Main container */
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 55px 24px;
+}
+
+/* ChainEscrow heading */
+
+.container > h1 {
+  margin: 0;
+
+  font-size: 42px;
+  font-weight: 800;
+
+  letter-spacing: -1.5px;
+
+  color: #302b01;
+}
+
+.container > p {
+  margin-top: 8px;
+
+  color: #382d03;
+
+  font-size: 15px;
+}
+
+/* Cards */
+
+.card {
+  background: #f6f5e4;
+
+  border: 1px solid #01050b;
+  border-radius: 12px;
+
+  padding: 24px;
+  margin-bottom: 20px;
+
+  box-shadow: 0 4px 18px rgba(30, 41, 59, 0.06);
+}
+
+.card h2 {
+  margin-top: 0;
+
+  color: #040609;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Text */
+
+.card p {
+  color: #000000;
+}
+
+/* Inputs */
+
+input {
+  width: 100%;
+
+  padding: 11px 13px;
+  margin-bottom: 12px;
+
+  background: #ffffff;
+
+  color: #243047;
+
+  border: 1px solid #020a12;
+  border-radius: 7px;
+
+  outline: none;
+}
+
+input:focus {
+  border-color: #4d647f;
+}
+
+/* Buttons */
+
+button {
+  padding: 10px 17px;
+
+  background: #0d0d0d;
+  color: white;
+
+  border: 1px solid #02070e;
+  border-radius: 7px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+button:hover {
+  background: #000000;
+}
+
+/* Milestones */
+
+.milestone {
+  margin-top: 12px;
+  padding: 17px;
+
+  background: #fafbfc;
+
+  border: 1px solid #02070e;
+  border-radius: 9px;
+}
+
+.milestone h4 {
+  margin-top: 0;
+  color: #000000;
+}
+
+/* Wallet address */
+
+.card small {
+  display: block;
+
+  padding: 10px;
+
+  background: #f7f8fa;
+
+  border: 1px solid #e7e9ed;
+  border-radius: 6px;
+
+  color: #596779;
+
+  word-break: break-all;
+}
+
+/* Message */
+
+.message {
+  padding: 12px 15px;
+
+  background: #eef1f4;
+
+  border: 1px solid #dfe3e8;
+  border-radius: 8px;
+
+  color: #010812;
+}
+
+/* Mobile */
+
+@media (max-width: 650px) {
+  .container {
+    padding: 35px 16px;
+  }
+
+  .container > h1 {
+    font-size: 34px;
+  }
+
+  .card {
+    padding: 19px;
+  }
+}

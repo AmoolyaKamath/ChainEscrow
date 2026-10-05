@@ -136,6 +136,11 @@ event DisputeResolved(
         milestone.status
     );
 }
+    function getMilestoneCount(
+    uint256 jobId
+) external view returns (uint256) {
+    return jobs[jobId].milestones.length;
+}
     function approveMilestone(
     uint256 jobId,
     uint256 milestoneId
